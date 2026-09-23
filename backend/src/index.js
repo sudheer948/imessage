@@ -6,14 +6,21 @@ import { clerkMiddleware } from "@clerk/express";
 import fs from "fs";
 import path from "path";
 import job from "./lib/cron.js";
+import clerkWebHook from "./webhooks/clerk.webhook.js";
 
 const app = express();
 const PORT = process.env.PORT;
 const FRONTEND_URL = process.env.FRONTEND_URL;
 const publicDir = path.join(process.cwd(), "public"); // join the current working directory and find the public folder
 
+app.use(
+  "/api/webhooks/clerk",
+  express.raw({ type: "application/json" }), // you don't really want to get the event data and parse it and so it should be in the raw format
+  clerkWebHook,
+);
+
 app.use(express.json());
-app.use(cors({ origin: FRONTEND_URL, credentials: true })); // credentials: true means allow the client to send the cookies or the auth headers with the request.
+app.use(cors({ origin: FRONTEND_URL, credentials: true })); // credentials: true means allow the client to send the cookies or the auth headers with the request
 app.use(clerkMiddleware());
 
 app.get("/health", (req, res) => {
