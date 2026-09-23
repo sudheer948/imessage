@@ -5,6 +5,7 @@ import { connectDB } from "./lib/db.js";
 import { clerkMiddleware } from "@clerk/express";
 import fs from "fs";
 import path from "path";
+import job from "./lib/cron.js";
 
 const app = express();
 const PORT = process.env.PORT;
@@ -28,6 +29,13 @@ if (fs.existsSync(publicDir)) {
     res.sendFile(path.join(publicDir, "index.html"), (err) => next(err));
   });
 }
+
+app.listen(PORT, async () => {
+  await connectDB();
+  console.log("Server is up and running on port: " + PORT);
+
+  if (process.env.NODE_ENV === "production") job.start(); // render will add this on production
+});
 
 /* 
 How one server serves both frontend + backend
@@ -54,8 +62,3 @@ Development:
 Production:
 → One Express server can serve both the API and the built frontend.
 */
-
-app.listen(PORT, async () => {
-  await connectDB();
-  console.log("Server is up and running on port: " + PORT);
-});
