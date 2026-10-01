@@ -17,12 +17,12 @@ const publicDir = path.join(process.cwd(), "public"); // join the current workin
 
 app.use(
   "/api/webhooks/clerk",
-  express.raw({ type: "application/json" }), // you don't really want to get the event data and parse it and so it should be in the raw format
+  express.raw({ type: "application/json" }), // For requests whose Content-Type is application/json, don't parse the body into a normal JavaScript object yet. Give me the raw body
   clerkWebHook,
 );
 
-app.use(express.json());
-app.use(cors({ origin: FRONTEND_URL, credentials: true })); // credentials: true means allow the client to send the cookies or the auth headers with the request
+app.use(express.json()); // it takes JSON and converts it into a javascript object
+app.use(cors({ origin: FRONTEND_URL, credentials: true })); // credentials: true means allow the client to send the cookies 
 app.use(clerkMiddleware());
 
 app.get("/health", (req, res) => {
