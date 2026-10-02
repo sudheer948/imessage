@@ -129,3 +129,24 @@ router.post("/", async (req, res) => {
 });
 
 export default router;
+
+/* 
+
+🧠 Remember the whole file in 6 steps
+
+1. Receive
+Clerk sends a webhook event to your backend.
+
+2. Verify
+Check that the webhook signature is valid.
+
+3. Read the event
+Find out whether the user was created, updated, or deleted.
+
+4. Update MongoDB
+Create/update the user record or delete it.
+
+5. Respond
+Return success if processing finishes.
+
+*/
